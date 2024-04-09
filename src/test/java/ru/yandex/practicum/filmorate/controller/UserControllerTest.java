@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 
@@ -25,6 +26,19 @@ class UserControllerTest {
                 () -> controller.create(user)
         );
         assertEquals("Логин не может содержать пробелы", exception.getMessage());
+    }
+
+    @Test
+    public void shouldCreateUser() {
+        User user = User.builder()
+                .login("userLogin")
+                .name("userName")
+                .email("useremail@mail.ru")
+                .birthday(LocalDate.of(1990, 1, 1))
+                .build();
+        controller.create(user);
+        assertEquals(1, controller.getAll().size());
+
     }
 
 }

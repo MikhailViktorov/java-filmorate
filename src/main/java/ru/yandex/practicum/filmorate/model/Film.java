@@ -14,14 +14,14 @@ public class Film {
     private Integer id;
 
     @NotBlank(message = "Название фильма не может быть пустым")
-    private final String name;
+    private String name;
 
     @Size(max = 200, message = "Максимальная длина описания — 200 символов")
-    private final String description;
+    private String description;
 
-    private final LocalDate releaseDate;
+    private LocalDate releaseDate;
 
     @Positive(message = "Продолжительность фильма должна быть положительным числом")
-    private final int duration;
+    private int duration;
 
 }

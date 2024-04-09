@@ -20,7 +20,7 @@ public class FilmController {
     private Map<Integer, Film> films = new HashMap<>();
 
     @PostMapping
-    public Film create(@Valid @RequestBody Film film) {
+    public Film create(@RequestBody @Valid Film film) {
         validateFilm(film);
         film.setId(generateId());
         films.put(film.getId(), film);
@@ -29,7 +29,7 @@ public class FilmController {
     }
 
     @PutMapping
-    public Film update(@Valid @RequestBody Film film) {
+    public Film update(@RequestBody @Valid Film film) {
         validateFilm(film);
         Film savedFilm = films.get(film.getId());
         if (savedFilm != null) {
