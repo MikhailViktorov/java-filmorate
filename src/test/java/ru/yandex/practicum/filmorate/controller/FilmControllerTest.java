@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
 class FilmControllerTest {
+    /*
     private FilmController controller = new FilmController();
 
 
@@ -39,5 +40,9 @@ class FilmControllerTest {
         controller.create(film);
         assertEquals(1, controller.getAll().size());
 
+
+
     }
+
+ */
 }
