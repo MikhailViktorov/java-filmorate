@@ -18,25 +18,28 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResonse handleValidationException(final ValidationException e) {
-        log.debug("Получен статус 400 bad request {}", e.getMessage(), e);
+        log.debug("Получен статус 400 {}", e.getMessage(), e);
         return new ErrorResonse("Ошибка : " + e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ErrorResonse handleValidationExceptions(MethodArgumentNotValidException e) {
-        return new ErrorResonse("BadRequest");
+        log.debug("Получен статус 400 {}", e.getMessage(), e);
+        return new ErrorResonse("Ошибка : " + e.getMessage());
     }
 
     @ExceptionHandler({FilmNotFoundException.class, UserNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResonse handleNotFoundException(final RuntimeException e) {
+        log.debug("Получен статус 404 {}", e.getMessage(), e);
         return new ErrorResonse("Ошибка : " + e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResonse handleServerException(final Throwable e) {
+        log.debug("Получен статус 500 {}", e.getMessage(), e);
         return new ErrorResonse("Ошибка сервера :(");
     }
 }

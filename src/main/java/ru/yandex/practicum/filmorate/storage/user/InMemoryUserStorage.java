@@ -24,7 +24,7 @@ public class InMemoryUserStorage implements UserStorage {
         checkLoginAndName(user);
         user.setId(generateId());
         users.put(user.getId(), user);
-        log.info("Запрос на создание пользователя успешно обработан {}", user);
+        log.info("Пользователь успешно создан {}", user);
         return user;
     }
 
@@ -34,10 +34,10 @@ public class InMemoryUserStorage implements UserStorage {
 
         if (savedUser != null) {
             users.put(user.getId(), user);
-            log.info("Запрос на изменение пользователя успешно обработан {}", user);
+            log.info("Пользователь успешно обнавлен {}", user);
             return user;
         } else {
-            throw new UserNotFoundException("Пользователь с таким id - " + user.getId() + " еще не был добавлен!");
+            throw new UserNotFoundException("Пользователь с таким id - " + user.getId() + " не найден");
         }
     }
 
