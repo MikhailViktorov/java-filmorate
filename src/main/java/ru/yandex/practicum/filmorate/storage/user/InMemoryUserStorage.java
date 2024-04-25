@@ -53,7 +53,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     private void checkLoginAndName(User user) {
         if (user.getLogin().contains(" ")) {
-            throw new ValidationException("Логин содержит пробелы");
+            throw new ValidationException("login contains spaces");
         }
 
         if (user.getName() == null || user.getName().isBlank()) {

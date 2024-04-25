@@ -27,7 +27,7 @@ class UserControllerTest {
                 () -> controller.create(user)
         );
 
-        assertEquals("Логин содержит пробелы", exception.getMessage());
+        assertEquals("login contains spaces", exception.getMessage());
     }
 
     @Test
