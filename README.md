@@ -5,7 +5,7 @@ Template repository for Filmorate project.
 
 
 - ###  Получение всех фильмов:
-```sh
+```
 SELECT film_id, 
        title
 FROM films;
