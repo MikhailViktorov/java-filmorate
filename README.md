@@ -5,19 +5,19 @@ Template repository for Filmorate project.
 
 
 - ###  Получение всех фильмов:
-```
+```postgresql
 SELECT film_id, 
        title
 FROM films;
 ```
 - ###  Получение всех пользователей:
-```sh
+```postgresql
 SELECT user_id,
        name
 FROM users;   
 ```
 -  ### Получение топа N наиболее популярных фильмов:
-```sh
+```postgresql
 SELECT 
 	f.name AS name,
 	COUNT(l.film_id) AS count
