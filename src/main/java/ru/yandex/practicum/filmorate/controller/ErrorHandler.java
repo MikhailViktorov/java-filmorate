@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
-import ru.yandex.practicum.filmorate.model.ErrorResonse;
+import ru.yandex.practicum.filmorate.model.ErrorResponse;
 
 
 @Slf4j
@@ -17,29 +17,29 @@ import ru.yandex.practicum.filmorate.model.ErrorResonse;
 public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResonse handleValidationException(final ValidationException e) {
+    public ErrorResponse handleValidationException(final ValidationException e) {
         log.debug("Получен статус 400 {}", e.getMessage(), e);
-        return new ErrorResonse("Ошибка : " + e.getMessage());
+        return new ErrorResponse("Ошибка : " + e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ErrorResonse handleValidationExceptions(MethodArgumentNotValidException e) {
+    public ErrorResponse handleValidationExceptions(MethodArgumentNotValidException e) {
         log.debug("Получен статус 400 {}", e.getMessage(), e);
-        return new ErrorResonse("Ошибка : " + e.getMessage());
+        return new ErrorResponse("Ошибка : " + e.getMessage());
     }
 
     @ExceptionHandler({FilmNotFoundException.class, UserNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResonse handleNotFoundException(final RuntimeException e) {
+    public ErrorResponse handleNotFoundException(final RuntimeException e) {
         log.debug("Получен статус 404 {}", e.getMessage(), e);
-        return new ErrorResonse("Ошибка : " + e.getMessage());
+        return new ErrorResponse("Ошибка : " + e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResonse handleServerException(final Throwable e) {
+    public ErrorResponse handleServerException(final Throwable e) {
         log.debug("Получен статус 500 {}", e.getMessage(), e);
-        return new ErrorResonse("Ошибка сервера :(");
+        return new ErrorResponse("Ошибка сервера :(");
     }
 }

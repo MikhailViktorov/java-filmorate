@@ -3,6 +3,6 @@ package ru.yandex.practicum.filmorate.model;
 import lombok.Value;
 
 @Value
-public class ErrorResonse {
+public class ErrorResponse {
     String error;
 }
