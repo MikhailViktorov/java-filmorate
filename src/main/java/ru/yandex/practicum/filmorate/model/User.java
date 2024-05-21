@@ -1,16 +1,18 @@
 package ru.yandex.practicum.filmorate.model;
 
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.Data;
 
-import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 public class User {
-    @Positive
     private Integer id;
 
     @NotBlank(message = "Электронная почта не может быть пустой")
@@ -26,6 +28,13 @@ public class User {
     @PastOrPresent(message = "Дата рождения не может быть в будущем")
     private LocalDate birthday;
 
-    private Set<Long> friends = new HashSet<>();
-    private Set<Film> likeFilms = new HashSet<>();
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("ID", id);
+        map.put("EMAIL", email);
+        map.put("NAME", name);
+        map.put("LOGIN", login);
+        map.put("BIRTHDAY", birthday);
+        return map;
+    }
 }
