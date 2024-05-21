@@ -158,12 +158,12 @@ public class FilmDbStorageTest {
         Genre genre5 = filmStorage.getGenreById(5);
         Genre genre6 = filmStorage.getGenreById(6);
 
-        assertEquals(genre1.getName(), "Комедия");
-        assertEquals(genre2.getName(), "Драма");
-        assertEquals(genre3.getName(), "Мультфильм");
-        assertEquals(genre4.getName(), "Триллер");
-        assertEquals(genre5.getName(), "Документальный");
-        assertEquals(genre6.getName(), "Боевик");
+        assertEquals(genre1.getName(), "РљРѕРјРµРґРёСЏ");
+        assertEquals(genre2.getName(), "Р”СЂР°РјР°");
+        assertEquals(genre3.getName(), "РњСѓР»СЊС‚С„РёР»СЊРј");
+        assertEquals(genre4.getName(), "РўСЂРёР»Р»РµСЂ");
+        assertEquals(genre5.getName(), "Р”РѕРєСѓРјРµРЅС‚Р°Р»СЊРЅС‹Р№");
+        assertEquals(genre6.getName(), "Р‘РѕРµРІРёРє");
     }
 
     @Test
