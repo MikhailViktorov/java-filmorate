@@ -1,29 +1,49 @@
 # java-filmorate
+
 Template repository for Filmorate project.
 
 ![Database schema](https://github.com/MikhailViktorov/java-filmorate/blob/main/SchemaDB.png)
 
+- ### Получение всех фильмов:
 
-- ###  Получение всех фильмов:
 ```SQL
-SELECT film_id, 
-       title
+SELECT *
 FROM films;
 ```
-- ###  Получение всех пользователей:
+
+- ### Получение всех пользователей:
+
 ```SQL
-SELECT user_id,
-       name
+SELECT *
 FROM users;   
 ```
--  ### Получение топа N наиболее популярных фильмов:
+
+-  ### Получение друзей пользователя:
+
 ```SQL
-SELECT 
-	f.name AS name,
-	COUNT(l.film_id) AS count
+SELECT friend_id
+FROM friends
+WHERE user_id = ?
+```
+
+-  ### Получение топа N наиболее популярных фильмов:
+
+```SQL
+SELECT f.name           AS name,
+       COUNT(l.film_id) AS count_likes
 FROM films AS f
-LEFT JOIN likes AS l ON l.film_id = f.film_id
+         LEFT JOIN likes AS l ON l.film_id = f.film_id
 GROUP BY f.name
-ORDER BY count DESC
-LIMIT N;
+ORDER BY count DESC LIMIT N;
+```
+
+-  ### Получение жанров фильма:
+
+```SQL
+SELECT fg.GENRE_ID AS id,
+       g.NAME      AS name
+FROM FILM_GENRES AS fg
+         INNER JOIN GENRES AS g ON fg.GENRE_ID = g.ID
+WHERE fg.FILM_ID = ?
+ORDER BY fg.GENRE_ID;
 ```

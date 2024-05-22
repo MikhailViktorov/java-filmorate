@@ -1,17 +1,26 @@
 package ru.yandex.practicum.filmorate.service;
 
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+import ru.yandex.practicum.filmorate.exception.CreationException;
+import ru.yandex.practicum.filmorate.exception.ElementIsNullException;
+import ru.yandex.practicum.filmorate.exception.UpdateException;
+import ru.yandex.practicum.filmorate.exception.ValidateException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.FilmMpa;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import javax.validation.Valid;
-import java.util.Collection;
+import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -24,11 +33,25 @@ public class FilmService {
 
 
     public Film create(Film film) {
+        validateFilm(film);
+        if (film.getId() == null) {
+            genreAndMpaValidation(film);
+            Integer newId = filmStorage.create(film).getId();
+            film.setId(newId);
+            addFilmGenresToDb(film);
+            return film;
+        }
+        if (!(filmStorage.getFilmById(film.getId()) == null)) {
+            throw new CreationException("Фильм с id: " + film.getId() + " уже существует");
+        }
         return filmStorage.create(film);
     }
 
 
     public Film update(@RequestBody @Valid Film film) {
+        if (filmStorage.getFilmById(film.getId()) == null) {
+            throw new UpdateException("Фильм с id: " + film.getId() + " не найден");
+        }
         return filmStorage.update(film);
     }
 
@@ -38,38 +61,96 @@ public class FilmService {
     }
 
     public Film getFilmById(int id) {
-        return filmStorage.getFilmById(id);
+        Film film = filmStorage.getFilmById(id);
+        genreAndMpaValidation(film);
+        film.getGenres().clear();
+        film.setGenres(getAllGenresByFilmId(id));
+        return film;
     }
 
-    public Film addLike(int id, int userId) {
-        Film storageFilm = filmStorage.getFilmById(id);
+    public Film addLike(int filmId, int userId) {
+        Film film = filmStorage.getFilmById(filmId);
         User user = userStorage.getUserById(userId);
-
-        storageFilm.setLikes(storageFilm.getLikes() + 1);
-        user.getLikeFilms().add(storageFilm);
-
-        return storageFilm;
+        if (film == null || user == null) {
+            throw new ElementIsNullException("Фильм и/или пользователь не найден(ы)");
+        }
+        return filmStorage.addLikeToFilm(userId, filmId);
     }
 
     public Film deleteLike(int filmId, int userId) {
-        Film storageFilm = filmStorage.getFilmById(filmId);
+        Film film = filmStorage.getFilmById(filmId);
         User user = userStorage.getUserById(userId);
-
-        storageFilm.setLikes(storageFilm.getLikes() - 1);
-        user.getLikeFilms().remove(storageFilm);
-
-        return storageFilm;
+        if (film == null || user == null) {
+            throw new ElementIsNullException("Фильм и/или пользователь не найден(ы)");
+        }
+        return filmStorage.removeLikeFromFilm(userId, filmId);
     }
 
-    public Collection<Film> mostLikeFilms(Integer count) {
-        if (count == null) {
-            count = 10;
-        }
-
-        return filmStorage.getFilms().stream()
-                .sorted((f1, f2) -> Long.compare(f2.getLikes(), f1.getLikes()))
+    public List<Film> mostLikeFilms(Integer count) {
+        return filmStorage.getAll().stream()
+                .sorted(Comparator.comparingInt(o -> (filmStorage.getAllFilmLikes(((Film) o).getId()).size())).reversed())
                 .limit(count)
                 .collect(Collectors.toList());
+    }
+
+    private void validateFilm(Film film) {
+        if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
+            throw new ValidateException("Дата релиза — не раньше 28 декабря 1895 года");
+        }
+    }
+
+    private void addFilmGenresToDb(Film film) {
+        for (Genre genre : film.getGenres()) {
+            filmStorage.putGenreIdAndFilmId(film.getId(), genre.getId());
+        }
+    }
+
+    private void genreAndMpaValidation(Film film) {
+        if (film.getMpa() != null) {
+            try {
+                FilmMpa mpa = filmStorage.getMpaById(film.getMpa().getId());
+                if (mpa == null) {
+                    throw new ValidateException("Mpa с id: " + film.getMpa().getId() + " не существует");
+                }
+                film.setMpa(mpa);
+            } catch (EmptyResultDataAccessException e) {
+                throw new ValidateException("Mpa с id: " + film.getMpa().getId() + " не существует");
+            }
+        }
+        if (film.getGenres() != null) {
+            try {
+                Set<Genre> genres = getAllGenres().stream()
+                        .peek(genre -> genre.setName(null))
+                        .collect(Collectors.toSet());
+                for (Genre genre : film.getGenres()) {
+                    if (!genres.contains(genre)) {
+                        throw new ValidateException("Жанр с id: " + genre.getId() + " не существует");
+                    }
+                }
+            } catch (EmptyResultDataAccessException e) {
+                throw new ValidateException("Жанр не существует");
+            }
+        }
+    }
+
+    public List<Genre> getAllGenres() {
+        return filmStorage.getAllGenres();
+    }
+
+    public Genre getGenreById(int id) {
+        return filmStorage.getGenreById(id);
+    }
+
+    public FilmMpa getMpaById(int id) {
+        return filmStorage.getMpaById(id);
+    }
+
+    public List<FilmMpa> getAllMpas() {
+        return filmStorage.getAllMpas();
+    }
+
+    public Set<Genre> getAllGenresByFilmId(int filmId) {
+        return filmStorage.getAllGenresByFilmId(filmId);
     }
 
 }
