@@ -3,7 +3,9 @@ package ru.yandex.practicum.filmorate.model;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -12,7 +14,9 @@ import java.util.Map;
 import java.util.Set;
 
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
 public class Film {
     private Integer id;
 
