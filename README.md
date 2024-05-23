@@ -4,10 +4,10 @@
 
 ### Стек технологий: REST API, Spring Boot, Java DataBase Connectivity, Apache Maven, H2 SQL, JUnit.
 
-```# Filmorate entity relationship diagramm
+# Filmorate entity relationship diagramm
 
 ![Database schema](https://github.com/MikhailViktorov/java-filmorate/blob/main/DbSchema.png)
-```
+
 - ### Получение всех фильмов:
 
 ```SQL
