@@ -32,10 +32,10 @@ WHERE user_id = ?
 SELECT f.name AS name,
        COUNT(fl.film_id) AS count_likes
 FROM films AS f
-LEFT JOIN film_likes AS fl ON fl.film_id = f.film_id
+LEFT JOIN film_likes AS fl ON fl.film_id = f.id
 GROUP BY f.name
-ORDER BY count DESC
-LIMIT N;
+ORDER BY count_likes DESC
+LIMIT ?;
 ```
 
 -  ### Получение жанров фильма:
