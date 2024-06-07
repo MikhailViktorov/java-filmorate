@@ -35,7 +35,7 @@ create table IF NOT EXISTS FILM_GENRES
     GENRE_ID INTEGER,
     constraint FILM_GENRES_FILM_FK
     foreign key (FILM_ID) references FILMS
-    on update cascade on delete cascade,
+        on update cascade on delete cascade,
     constraint FILM_GENRE_GENRES_FK
     foreign key (GENRE_ID) references GENRES
     on update cascade on delete cascade

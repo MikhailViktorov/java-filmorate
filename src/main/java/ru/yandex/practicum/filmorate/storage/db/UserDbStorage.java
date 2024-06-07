@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.UpdateException;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
@@ -80,6 +81,15 @@ public class UserDbStorage implements UserStorage {
         return result;
     }
 
+    @Override
+    public void deleteUser(int id) {
+        String sqlQuery = "DELETE FROM users WHERE id = ?";
+        int update = jdbcTemplate.update(sqlQuery,id);
+        if (update == 0) {
+            throw new UpdateException("Пользователь с id =  " + id + " не найден");
+        }
+    }
+
     private User mapRowToUser(ResultSet resultSet, int rowNum) throws SQLException {
         User user = new User();
         user.setId(resultSet.getInt("id"));
@@ -89,4 +99,5 @@ public class UserDbStorage implements UserStorage {
         user.setBirthday(resultSet.getDate("birthday").toLocalDate());
         return user;
     }
+
 }

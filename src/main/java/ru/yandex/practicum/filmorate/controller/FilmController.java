@@ -61,5 +61,18 @@ public class FilmController {
         return filmService.mostLikeFilms(count);
     }
 
+    @DeleteMapping("/{id}")
+    public void deleteFilmById(@PathVariable("id") int id) {
+        log.info("Запрос на удаление фильма с id {}", id);
+        filmService.deleteFilm(id);
+    }
+    @GetMapping("/common")
+    public List<Film> getCommonsFilms(
+            @RequestParam(value = "userId") int userId,
+            @RequestParam(value = "friendId") int friendId
+    ) {
+        return filmService.getCommonFilms(userId, friendId);
+    }
+
 
 }

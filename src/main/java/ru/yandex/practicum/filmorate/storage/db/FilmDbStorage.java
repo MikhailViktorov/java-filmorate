@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.exception.UpdateException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.FilmMpa;
 import ru.yandex.practicum.filmorate.model.Genre;
@@ -21,7 +22,6 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
-
 
     @Override
     public Film create(Film film) {
@@ -119,6 +119,29 @@ public class FilmDbStorage implements FilmStorage {
         return result;
     }
 
+    @Override
+    public void deleteFilm(int id) {
+        String sqlQuery = "DELETE FROM films WHERE id = ?";
+        int update = jdbcTemplate.update(sqlQuery,id);
+        if (update == 0) {
+            throw new UpdateException("Фильм с id =  " + id + " не найден");
+        }
+    }
+
+    @Override
+    public List<Film> getCommonFilms(int userId, int friendId) {
+        String sqlQuery = " SELECT f.ID, f.NAME, f.DESCRIPTION, f.RELEASE_DATE, f.DURATION," +
+                "f.MPA_ID, m.NAME AS mpa_name" +
+                " FROM films AS f " +
+                "JOIN MPA AS m ON m.ID = f.MPA_ID " +
+                "JOIN FILM_LIKES AS l ON f.ID = l.FILM_ID " +
+                "JOIN FILM_LIKES AS lf ON l.FILM_ID = lf.FILM_ID " +
+                "WHERE l.USER_ID = ? and lf.USER_ID = ?";
+
+        return jdbcTemplate.query(sqlQuery, this::mapRowToFilmWithGenres, userId, friendId);
+
+    }
+
     private FilmMpa mapRowToFilmMpa(ResultSet rs, int rowNum) throws SQLException {
         FilmMpa filmMpa = new FilmMpa();
         filmMpa.setId(rs.getInt("id"));
@@ -143,4 +166,13 @@ public class FilmDbStorage implements FilmStorage {
         film.setDuration(rs.getInt("duration"));
         return film;
     }
+    private Film mapRowToFilmWithGenres(ResultSet rs, int rowNum) throws SQLException {
+        Film film = mapRowToFilm(rs,rowNum);
+        film.setGenres(getAllGenresByFilmId(rs.getInt("id")));
+        return film;
+    }
+
+
+
+
 }
