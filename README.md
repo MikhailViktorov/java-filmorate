@@ -1,8 +1,16 @@
-# java-filmorate
+## Описание
+Backend часть приложения для поиска и оценки фильмов.
 
-## Приложение - бэкэнд сервиса по подбору фильмов для просмотра.
-
-### Стек технологий: REST API, Spring Boot, Java DataBase Connectivity, Apache Maven, H2 SQL, JUnit.
+## Технологии и инструменты
+* Java core
+* Spring Boot
+* REST API
+* JDBC + SQL - подключение к базе данных, запросы
+* Maven - управление зависимостями, многомодульность
+* Docker - развертывание и контейнеризация
+* Junit 5 - тестирование
+* СУБД - H2
+* Lombok
 
 # Filmorate entity relationship diagramm
 
